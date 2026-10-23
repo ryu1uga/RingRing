@@ -29,6 +29,7 @@ public partial class MainWindow : Window
         SoundCombo.SelectionChanged += (_, _) => UpdateCustomPanel();
         VolumeSlider.ValueChanged += (_, _) => VolumeLabel.Text = $"{VolumeSlider.Value:0} %";
         BrowseButton.Click += (_, _) => BrowseCustomSound();
+        CustomPathBox.TextChanged += (_, _) => ShowFileLength();
         PlayButton.Click += (_, _) => PreviewSound();
         StopButton.Click += (_, _) => _app.Alerts.Sound.Stop();
         QrButton.Click += (_, _) => _app.ShowQr();
@@ -64,6 +65,8 @@ public partial class MainWindow : Window
         SoundCombo.SelectedValue = s.Sound.Id;
         if (SoundCombo.SelectedIndex < 0) SoundCombo.SelectedIndex = 0;
         CustomPathBox.Text = s.Sound.CustomPath;
+        StartBox.Text = TimeText.Format(s.Sound.CustomStartSeconds);
+        DurationBox.Text = s.Sound.CustomDurationSeconds.ToString("0");
         VolumeSlider.Value = Math.Round(s.Sound.Volume * 100);
         VolumeLabel.Text = $"{VolumeSlider.Value:0} %";
         RepeatCombo.SelectedItem = Math.Clamp(s.Sound.Repeat, 1, 10);
@@ -118,6 +121,10 @@ public partial class MainWindow : Window
             error = "Elige un archivo de sonido o selecciona uno de los tonos incluidos.";
             return null;
         }
+        if (!TryReadSegment(out var start, out var duration, out error))
+            return null;
+        s.Sound.CustomStartSeconds = start;
+        s.Sound.CustomDurationSeconds = duration;
 
         RepliesGrid.CommitEdit(DataGridEditingUnit.Row, true);
         s.Replies = _replies
@@ -195,14 +202,85 @@ public partial class MainWindow : Window
 
     private void PreviewSound()
     {
+        if (!TryReadSegment(out var start, out var duration, out var error))
+        {
+            SaveMessage.Foreground = System.Windows.Media.Brushes.Firebrick;
+            SaveMessage.Text = error;
+            return;
+        }
+
         var sound = new SoundSettings
         {
             Id = SoundCombo.SelectedValue as string ?? "campanita",
             CustomPath = CustomPathBox.Text,
+            CustomStartSeconds = start,
+            CustomDurationSeconds = duration,
             Volume = VolumeSlider.Value / 100.0,
             Repeat = 1,
         };
+        SaveMessage.Text = "";
         _app.Alerts.Sound.Play(sound);
+    }
+
+    private bool TryReadSegment(out double start, out double duration, out string? error)
+    {
+        start = 0;
+        duration = 0;
+        error = null;
+
+        if (!TimeText.TryParse(StartBox.Text, out start) || start < 0)
+        {
+            error = "\"Empieza en\" debe ser un tiempo como 0:45 o 45.";
+            return false;
+        }
+        var durationText = DurationBox.Text.Trim().Replace(',', '.');
+        if (durationText.Length == 0) durationText = "0";
+        if (!double.TryParse(durationText, System.Globalization.NumberStyles.Float,
+                System.Globalization.CultureInfo.InvariantCulture, out duration) || duration is < 0 or > 600)
+        {
+            error = "La duración debe estar entre 0 y 600 segundos (0 = hasta el final).";
+            return false;
+        }
+        var isCustom = SoundCombo.SelectedValue as string == SoundLibrary.CustomId;
+        if (isCustom && _fileLength is { } length && start >= length.TotalSeconds)
+        {
+            error = $"El archivo dura {TimeText.Format(length.TotalSeconds)}; el inicio debe ser menor.";
+            return false;
+        }
+        return true;
+    }
+
+    // Lee la duración del archivo elegido para mostrarla y validar el inicio.
+    private TimeSpan? _fileLength;
+    private System.Windows.Media.MediaPlayer? _probe;
+
+    private void ShowFileLength()
+    {
+        _fileLength = null;
+        FileLengthText.Text = "";
+        _probe?.Close();
+        _probe = null;
+
+        var path = CustomPathBox.Text;
+        if (string.IsNullOrWhiteSpace(path) || !System.IO.File.Exists(path)) return;
+
+        var probe = new System.Windows.Media.MediaPlayer { Volume = 0 };
+        probe.MediaOpened += (_, _) =>
+        {
+            if (probe.NaturalDuration.HasTimeSpan)
+            {
+                _fileLength = probe.NaturalDuration.TimeSpan;
+                FileLengthText.Text = $"Duración del archivo: {TimeText.Format(_fileLength.Value.TotalSeconds)}";
+            }
+            probe.Close();
+        };
+        probe.MediaFailed += (_, _) =>
+        {
+            FileLengthText.Text = "No se pudo leer este archivo.";
+            probe.Close();
+        };
+        _probe = probe;
+        probe.Open(new Uri(path, UriKind.Absolute));
     }
 
     /// <summary>Convierte la combinación presionada en texto tipo "Ctrl+Alt+1".</summary>

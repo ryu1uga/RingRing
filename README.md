@@ -17,7 +17,7 @@ Todas vienen activas y cada una se puede desactivar en **Configuración > Alerta
 | --- | --- |
 | Notificación de Windows | Se queda en pantalla e incluye botones con las 4 primeras plantillas y "Visto". |
 | Aviso a pantalla completa | Capa azul que parpadea. Teclas 1-9 para responder, Esc para marcar visto. |
-| Sonido | 5 tonos incluidos (generados por la app) o un archivo propio .mp3/.wav. Volumen y repeticiones configurables. |
+| Sonido | 5 tonos incluidos (generados por la app) o un archivo propio .mp3/.wav. Con archivo propio puedes elegir desde qué segundo empieza y cuánto dura (con fundido), para usar solo el estribillo. Volumen y repeticiones configurables. |
 | Parpadeo en bandeja | El ícono alterna de color hasta que respondes. |
 | Pausar música | Pausa lo que esté sonando (Spotify, YouTube Music en el navegador...) vía los controles multimedia de Windows y lo reanuda al responder. |
 
@@ -59,6 +59,14 @@ dotnet run --project src/RingRing
 La primera vez, Windows pregunta si permites el acceso a la red. Acepta en **redes privadas**.
 
 ## Generar el instalador
+
+Instala Inno Setup una vez (`winget install JRSoftware.InnoSetup`) y ejecuta:
+
+```powershell
+.\build.ps1
+```
+
+O a mano:
 
 ```powershell
 dotnet publish src/RingRing -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish

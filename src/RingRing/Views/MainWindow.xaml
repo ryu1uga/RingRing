@@ -148,6 +148,25 @@
                             <Button x:Name="BrowseButton" Content="Elegir..." DockPanel.Dock="Right" Margin="8,0,0,0" />
                             <TextBox x:Name="CustomPathBox" IsReadOnly="True" />
                         </DockPanel>
+                        <TextBlock x:Name="FileLengthText" Style="{StaticResource Hint}" />
+
+                        <Grid Margin="0,4,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="16" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Empieza en (m:ss)" Style="{StaticResource Label}" />
+                                <TextBox x:Name="StartBox" MaxLength="8" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Duración en segundos (0 = hasta el final)" Style="{StaticResource Label}" />
+                                <TextBox x:Name="DurationBox" MaxLength="4" />
+                            </StackPanel>
+                        </Grid>
+                        <TextBlock Style="{StaticResource Hint}"
+                                   Text="Usa solo el estribillo: por ejemplo, empieza en 0:45 y dura 20 s. Entra y sale con un fundido suave." />
                     </StackPanel>
 
                     <TextBlock Text="Volumen" Style="{StaticResource Label}" />

@@ -53,6 +53,10 @@ public sealed class SoundSettings
     /// <summary>Id de un tono incluido, o "custom" para usar CustomPath.</summary>
     public string Id { get; set; } = "campanita";
     public string CustomPath { get; set; } = "";
+    /// <summary>Segundo en el que empieza el archivo propio (para saltar la intro).</summary>
+    public double CustomStartSeconds { get; set; }
+    /// <summary>Cuánto suena el archivo propio en cada repetición. 0 = hasta el final.</summary>
+    public double CustomDurationSeconds { get; set; } = 20;
     /// <summary>0.0 a 1.0</summary>
     public double Volume { get; set; } = 0.8;
     /// <summary>Veces que se repite el tono por llamada.</summary>
