@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#2348F0">
+  <title>RingRing</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/logo.svg">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main class="card">
+    <header class="brand">
+      <img src="/logo.svg" alt="" width="56" height="56">
+      <div>
+        <p class="eyebrow">RingRing</p>
+        <h1 id="title">Llamar</h1>
+      </div>
+    </header>
+
+    <!-- Formulario -->
+    <form id="ring-form" class="stack" autocomplete="on">
+      <label class="field">
+        <span>Tu nombre</span>
+        <input id="name" name="name" type="text" maxlength="40" placeholder="Opcional">
+      </label>
+      <label class="field">
+        <span>Mensaje</span>
+        <input id="message" name="message" type="text" maxlength="140" placeholder="Opcional, ej. la comida está lista">
+      </label>
+      <label class="field" id="pin-field" hidden>
+        <span>PIN</span>
+        <input id="pin" name="pin" type="password" inputmode="numeric" maxlength="12">
+      </label>
+
+      <button id="ring-button" class="ring-button" type="submit">
+        <svg viewBox="0 0 128 128" aria-hidden="true"><path d="M40 84 V62 a24 24 0 0 1 48 0 V84 Z" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"/><path d="M32 84 H96" stroke="currentColor" stroke-width="8" stroke-linecap="round"/><path d="M56 94 a8 8 0 0 0 16 0" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"/></svg>
+        <span>Llamar</span>
+      </button>
+      <p id="error" class="error" role="alert" hidden></p>
+    </form>
+
+    <!-- Estado de la llamada -->
+    <section id="status" class="status" hidden aria-live="polite">
+      <div id="status-icon" class="status-icon ringing" aria-hidden="true">
+        <svg viewBox="0 0 128 128"><path d="M40 84 V62 a24 24 0 0 1 48 0 V84 Z" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"/><path d="M32 84 H96" stroke="currentColor" stroke-width="8" stroke-linecap="round"/><path d="M56 94 a8 8 0 0 0 16 0" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"/></svg>
+      </div>
+      <p id="status-label" class="status-label">Sonando...</p>
+      <p id="reply" class="reply" hidden></p>
+      <button id="again" class="secondary" type="button" hidden>Llamar de nuevo</button>
+    </section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>

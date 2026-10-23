@@ -1,0 +1,26 @@
+<Window x:Class="RingRing.Views.QrWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="RingRing: llamarme"
+        Width="420" SizeToContent="Height"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        Background="#FFFFFF"
+        Icon="pack://application:,,,/Assets/ringring.ico"
+        FontFamily="Segoe UI Variable Text, Segoe UI">
+    <StackPanel Margin="32">
+        <TextBlock Text="Escanea para llamarme" FontSize="24" FontWeight="Bold" Foreground="#15181D" />
+        <TextBlock Text="Desde cualquier celular conectado a la misma red." FontSize="14" Foreground="#4A5260"
+                   Margin="0,4,0,20" TextWrapping="Wrap" />
+        <Border Background="#FFFFFF" BorderBrush="#D5D9E0" BorderThickness="1" CornerRadius="16" Padding="16"
+                HorizontalAlignment="Center">
+            <Image x:Name="QrImage" Width="280" Height="280" RenderOptions.BitmapScalingMode="NearestNeighbor" />
+        </Border>
+        <TextBox x:Name="UrlText" FontSize="18" FontWeight="SemiBold" Foreground="#2348F0" IsReadOnly="True"
+                 BorderThickness="0" Background="Transparent" HorizontalAlignment="Center" Margin="0,16,0,0" />
+        <TextBlock x:Name="OtherUrls" FontSize="13" Foreground="#4A5260" TextAlignment="Center"
+                   TextWrapping="Wrap" Margin="0,8,0,0" />
+        <Button x:Name="CopyButton" Content="Copiar enlace" HorizontalAlignment="Center" Padding="20,8"
+                Margin="0,16,0,0" MinHeight="40" />
+    </StackPanel>
+</Window>
